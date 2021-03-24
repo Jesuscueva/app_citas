@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'qe3iy22k1ykt2qr1',
         'USER': 'lisjtbp80qox0crd',
         'PASSWORD': 'zm5dol7944mu5ixw',
-        'HOST': 'qe3iy22k1ykt2qr1',
+        'HOST': 'u6354r3es4optspf.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
         'PORT': '3306'
     }
 }
@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
