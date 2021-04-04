@@ -25,7 +25,7 @@ SECRET_KEY = '3*kr5=q3b$c%o(si0y)kkmn6o*kcz9&&npt&byr%^af6%vqvqc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,10 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
     'citas_veterinaria'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -77,9 +80,9 @@ WSGI_APPLICATION = 'api_citas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'qe3iy22k1ykt2qr1',
-        'USER': 'lisjtbp80qox0crd',
-        'PASSWORD': 'zm5dol7944mu5ixw',
+        'NAME': 'qq57rjmwk717lpmr',
+        'USER': 'zp1nf9huetsoabag',
+        'PASSWORD': 'uzumycqu4su689ji',
         'HOST': 'u6354r3es4optspf.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
         'PORT': '3306'
     }
@@ -110,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -123,3 +126,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# para sobreescribir la tabla usuarios de django
+AUTH_USER_MODEL = 'citas_veterinaria.UsuarioModel'
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+
+# sirve para indicar donde se guardaran todos los archivos pasados por el client (FileField o ImageField)
+MEDIA_URL = '/media/'
+# sirve para mostrar el archivo multimedia mediante una URL
+MEDIA_ROOT = BASE_DIR / 'media'
