@@ -39,7 +39,10 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         verbose_name= "Tipo de usuario",
         choices= TIPO_PERSONAL
     )
-    
+    password = models.TextField(
+        db_column='usuario_password',
+        verbose_name='Contraseña del Usuario'
+    )
     usuarioCelular = models.CharField(
         max_length= 20,
         db_column= "usuario_telefono",
@@ -125,6 +128,10 @@ class VeterinarioModel(models.Model):
         db_column= "veterinario_apellido",
         null=False,
         verbose_name= "Apellido de la veterinaria"
+    )
+    veterinarioDescripcion = models.TextField(
+        db_column= "veterinario_descripcion",
+        verbose_name= "Descripcion del veterinario"
     )
     veterinarioFoto = models.ImageField(
         upload_to = "veterinario/",
