@@ -1,4 +1,5 @@
 
+from re import T
 from django.db import models
 
 # Create your models here.
@@ -47,14 +48,11 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         max_length= 20,
         db_column= "usuario_telefono",
         verbose_name= "Telefono del usuario",
-        null=True
     )
     usuarioFoto = models.ImageField(
         upload_to = "usuario/",
         db_column = "usuario_foto",
         verbose_name= "Foto del usuario",
-        null= True,
-        default = "https://img2.freepng.es/20180331/eow/kisspng-computer-icons-user-clip-art-user-5abf13db298934.2968784715224718991702.jpg"
     )
     
 
@@ -141,9 +139,9 @@ class VeterinarioModel(models.Model):
     )
     veterinaria = models.ForeignKey(
         to = VeterianriaModel,
-        related_name= "veterinaria",
+        related_name= "veterinariosVeterinaria",
         db_column= "veterinaria_id",
-        on_delete= models.CASCADE
+        on_delete= models.PROTECT,
     )
 
     class Meta:
@@ -166,8 +164,9 @@ class ServicioModel(models.Model):
     veterinaria = models.ForeignKey(
         db_column= "veterinaria_id",
         to= VeterianriaModel,
-        related_name= "veterinariaServicio",
-        on_delete= models.CASCADE
+        related_name= "servicioVeterinaria",
+        on_delete= models.PROTECT,
+        null=True
     )
     class Meta:
         db_table = "t_servicio"
@@ -244,3 +243,26 @@ class CitaModel(models.Model):
         db_table = "t_cita"
         verbose_name = "cita"
 
+class MascotaModel(models.Model):
+    mascotaId = models.AutoField(
+        primary_key=True,
+        unique= True,
+        null=False,
+        db_column= "mascota_id"
+    )
+    mascotaNombre = models.CharField(
+        null=False,
+        verbose_name= "Nombre de la Mascota",
+        db_column= "mascota_nombre",
+        max_length= 55,
+        unique=True
+    )
+    mascotaEdad = models.IntegerField(
+        null=False,
+        verbose_name= "Edad de la Mascota",
+        db_column= "mascota_edad"
+    )
+
+    class Meta:
+        db_table = "t_mascota"
+        verbose_name = "mascota"

@@ -1,7 +1,7 @@
 
 # Create your views here.
 
-from django import conf
+import re
 from .serializers import * 
 from .models import * 
 from uuid import uuid4
@@ -107,6 +107,7 @@ class VeterinariosController(generics.ListCreateAPIView):
                 "content": respuesta.errors,
                 "message": "Error al crear"
             }, status.HTTP_400_BAD_REQUEST)
+    #No se puede agregar un veterinario porque me pide veterinaria_id la foreinkey
 
 class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
     queryset = VeterinarioModel.objects.all()
@@ -154,5 +155,72 @@ class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
     def delete(self, request, id):
         pass
     
-    #No se puede agregar un veterinario porque me pide veterinaria_id la foreinkey
 
+class serviciosController(generics.ListCreateAPIView):
+    queryset = ServicioModel.objects.all()
+    serializer_class = ServiciosSerializer
+
+    def get(self, request):
+        respuesta = self.serializer_class(instance=self.get_queryset(), many= True)
+
+        return Response({
+            "success": True,
+            "content": respuesta.data,
+            "message": None
+        })
+    def post(self, request):
+        respuesta = self.serializer_class(data=request.data)
+        if respuesta.is_valid():
+            respuesta.save()
+            return Response({
+                "success": True,
+                "content": respuesta.data,
+                "message": "Creado con exito"
+            }, status.HTTP_201_CREATED)
+        else:
+            return Response({
+                "success": False,
+                "content": respuesta.errors,
+                "message": "Servicio no se creo correctamente"
+            })
+
+
+
+
+# Registrar Usuarios
+
+class RegistroUsuariosController(generics.CreateAPIView):
+    serializer_class = RegistroUsuariosSerializer
+
+    def post(self, request):
+        print(request.FILES)
+        formato = request.FILES['usuarioFoto'].name.split('.')[1]
+        print(formato)
+        nombre=str(uuid4())+'.'+formato
+        request.FILES['usuarioFoto'].name = nombre
+        nuevoUsuario = self.serializer_class(data=request.data)
+        if nuevoUsuario.is_valid():
+            nuevoUsuario.save()
+            return Response({
+                "succes": True,
+                "content": nuevoUsuario.data,
+                "message": None
+            }, status.HTTP_201_CREATED)
+        else:
+            return Response({
+                "success": True,
+                "content": nuevoUsuario.errors,
+                "message": "Error al crear nuevo usuario"
+            }, status.HTTP_400_BAD_REQUEST)
+
+class MascotaDelUsuario(generics.ListCreateAPIView):
+    queryset = MascotaModel.objects.all()
+    serializer_class = ""
+
+    def get(self, request):
+        respuesta = self.serializer_class(instace = self.get_queryset(), many=True)
+        return Response({
+            "success": True,
+            "content": respuesta.data,
+            "message": None
+        })

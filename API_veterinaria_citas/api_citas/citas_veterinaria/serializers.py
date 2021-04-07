@@ -1,4 +1,6 @@
 
+from re import S
+from django.db.models import fields
 from .models import * 
 from rest_framework import serializers
 
@@ -38,4 +40,51 @@ class VeterinarioSerializer(serializers.ModelSerializer):
     #         self.instance
     class Meta:
         model = VeterinarioModel
-        fields = ['veterinarioNombre', 'veterinarioApellido', 'veterinarioDescripcion', 'veterinarioFoto']
+        # fields = ['veterinarioNombre', 'veterinarioApellido', 'veterinarioDescripcion', 'veterinarioFoto']
+        fields = '__all__'
+
+class ServiciosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServicioModel
+        fields = "__all__"
+    
+
+class RegistroUsuariosSerializer(serializers.ModelSerializer):
+
+    password = serializers.CharField(write_only=True)
+    # print(password)
+
+    def save(self):
+        usuarioNombre = self.validated_data.get('usuarioNombre')
+        usuarioApellido = self.validated_data.get('usuarioApellido')
+        usuarioEmail = self.validated_data.get('usuarioEmail')
+        usuarioTipo = self.validated_data.get('usuarioTipo')
+        password = self.validated_data.get('password')
+        usuarioCelular = self.validated_data.get('usuarioCelular')
+        usuarioFoto = self.validated_data.get('usuarioFoto')
+        is_staff = False
+        nuevoUsuario = UsuarioModel(
+            usuarioNombre = usuarioNombre,
+            usuarioApellido = usuarioApellido,
+            usuarioEmail = usuarioEmail,
+            usuarioTipo = usuarioTipo,
+            usuarioCelular = usuarioCelular,
+            usuarioFoto = usuarioFoto,
+            is_staff = is_staff
+        )
+
+        nuevoUsuario.set_password(password)
+        print("assss")
+        print(nuevoUsuario.password)
+        nuevoUsuario.save()
+        return nuevoUsuario
+
+    class Meta: 
+        model = UsuarioModel
+        exclude = ['groups', 'user_permissions']
+
+class MascotarSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model= MascotaModel
+        fields = "__all__"
