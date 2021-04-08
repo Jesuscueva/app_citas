@@ -8,5 +8,6 @@ urlpatterns = [
     path('veterinario', VeterinariosController.as_view()),
     path('veterinario/<int:id>', veterinarioController.as_view()),
     path('servicio', serviciosController.as_view()),
-    path('registro', RegistroUsuariosController.as_view())
+    path('registro', RegistroUsuariosController.as_view()),
+    path('mascota', MascotaDelUsuario.as_view())
 ]

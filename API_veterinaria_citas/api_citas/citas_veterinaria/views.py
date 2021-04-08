@@ -107,7 +107,6 @@ class VeterinariosController(generics.ListCreateAPIView):
                 "content": respuesta.errors,
                 "message": "Error al crear"
             }, status.HTTP_400_BAD_REQUEST)
-    #No se puede agregar un veterinario porque me pide veterinaria_id la foreinkey
 
 class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
     queryset = VeterinarioModel.objects.all()
@@ -185,8 +184,6 @@ class serviciosController(generics.ListCreateAPIView):
             })
 
 
-
-
 # Registrar Usuarios
 
 class RegistroUsuariosController(generics.CreateAPIView):
@@ -215,12 +212,27 @@ class RegistroUsuariosController(generics.CreateAPIView):
 
 class MascotaDelUsuario(generics.ListCreateAPIView):
     queryset = MascotaModel.objects.all()
-    serializer_class = ""
+    serializer_class = MascotarSerializer
 
     def get(self, request):
-        respuesta = self.serializer_class(instace = self.get_queryset(), many=True)
+        respuesta = self.serializer_class(instance = self.get_queryset(), many=True)
         return Response({
             "success": True,
             "content": respuesta.data,
             "message": None
         })
+    def post(self, request):
+        respuesta = self.serializer_class(data=request.data)
+        if respuesta.is_valid():
+            respuesta.save()
+            return Response({
+                "success": True,
+                "content": respuesta.data,
+                "message": "Creado exitosamente"
+            })
+        else:
+            return Response({
+                "success": False,
+                "content": respuesta.errors,
+                "message": "Error al registrar mascota"
+            })

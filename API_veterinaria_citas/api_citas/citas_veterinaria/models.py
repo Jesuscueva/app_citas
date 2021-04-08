@@ -142,6 +142,7 @@ class VeterinarioModel(models.Model):
         related_name= "veterinariosVeterinaria",
         db_column= "veterinaria_id",
         on_delete= models.PROTECT,
+        null=True
     )
 
     class Meta:
@@ -191,7 +192,8 @@ class SedeModel(models.Model):
         db_column= "veterinaria_id",
         to= VeterianriaModel,
         related_name= "veterinariaSede",
-        on_delete= models.CASCADE
+        on_delete= models.CASCADE,
+        null= True
     )
     class Meta:
         db_table = "t_sede"
@@ -231,13 +233,15 @@ class CitaModel(models.Model):
         to= SedeModel,
         db_column= "sede_id",
         on_delete= models.CASCADE,
-        related_name= "sede"
+        related_name= "sede",
+        null= True
     )
     servicio = models.ForeignKey(
         to= ServicioModel,
         related_name= "servicio",
         on_delete= models.CASCADE,
-        db_column= "servicio_id"
+        db_column= "servicio_id",
+        null= True
     )
     class Meta: 
         db_table = "t_cita"
@@ -261,6 +265,20 @@ class MascotaModel(models.Model):
         null=False,
         verbose_name= "Edad de la Mascota",
         db_column= "mascota_edad"
+    )
+    cita = models.ForeignKey(
+        to= CitaModel,
+        related_name= "citaMascota",
+        db_column= "cita_id",
+        null= True,
+        on_delete= models.PROTECT
+    )
+    usuario = models.ForeignKey(
+        to= UsuarioModel,
+        related_name= "mascotaUsuario",
+        db_column= "usuario_id",
+        on_delete= models.PROTECT,
+        null=True
     )
 
     class Meta:
