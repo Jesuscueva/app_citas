@@ -2,12 +2,19 @@
 # Create your views here.
 
 import re
+
+from rest_framework import permissions
 from .serializers import * 
 from .models import * 
 from uuid import uuid4
 
 from rest_framework import generics, status
 from rest_framework.response import Response
+
+## Agregado por Jesus
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+## Agregado por Jesus
 
 
 class VeterinariaController(generics.ListCreateAPIView):
@@ -184,11 +191,7 @@ class serviciosController(generics.ListCreateAPIView):
                 "message": "Servicio no se creo correctamente"
             })
 
-
-
-
 # Registrar Usuarios
-
 class RegistroUsuariosController(generics.CreateAPIView):
     serializer_class = RegistroUsuariosSerializer
 
@@ -212,6 +215,10 @@ class RegistroUsuariosController(generics.CreateAPIView):
                 "content": nuevoUsuario.errors,
                 "message": "Error al crear nuevo usuario"
             }, status.HTTP_400_BAD_REQUEST)
+
+class CustomPayloadController(TokenObtainPairView):
+    permission_classes = [AllowAny]
+    serializer_class = ""
 
 class MascotaDelUsuario(generics.ListCreateAPIView):
     queryset = MascotaModel.objects.all()
