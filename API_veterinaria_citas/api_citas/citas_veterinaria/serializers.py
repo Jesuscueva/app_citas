@@ -1,10 +1,14 @@
 
 from re import S
 from django.db.models import fields
+from rest_framework_simplejwt import tokens
 from .models import * 
 from rest_framework import serializers
 
-
+# Agregado por Jesus
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as SimpleTokenObtainPairSerializer
+from django.utils.translation import gettext_lazy as _
 class VeterinariaSerializer(serializers.ModelSerializer):
 
     def update(self):
@@ -21,9 +25,11 @@ class VeterinariaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class VeterinarioSerializer(serializers.ModelSerializer):
 
-    # veterinaria = VeterinariaSerializer(source= 'veterinaria', many=True)
+class VeterinarioSerializer(serializers.ModelSerializer):
+    # veterinaria = VeterinariaSerializer()
+
+    # veterinaria = VeterinariaSerializer(source= 'veterinaria_id', many=True)
     def update(self):
         self.instance.veterinarioNombre = self.validated_data.get('veterinarioNombre')
         self.instance.veterinarioApellido = self.validated_data.get('veterinarioApellido')
@@ -44,6 +50,7 @@ class VeterinarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ServiciosSerializer(serializers.ModelSerializer):
+    # veterinaria = VeterinariaSerializer()
     class Meta:
         model = ServicioModel
         fields = "__all__"
@@ -88,3 +95,20 @@ class MascotarSerializer(serializers.ModelSerializer):
     class Meta:
         model= MascotaModel
         fields = "__all__"
+
+#Agregado por Jesus
+class CustomPayloadSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token =  super(CustomPayloadSerializer, cls).get_token(user)
+        # token['usuarioTipo'] = user.usuarioTipo
+        print(user)
+        print(token)
+        return token
+
+class TokenObtainPairSerializer(SimpleTokenObtainPairSerializer):
+    default_error_messages = {
+        'no_active_account': _('CUSTOM ERROR MESSAGE HERE')
+    }
+
+#Agregado por Jesus 

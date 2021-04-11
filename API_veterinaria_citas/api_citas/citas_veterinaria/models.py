@@ -1,5 +1,6 @@
 
 from re import T
+from django import db
 from django.db import models
 
 # Create your models here.
@@ -48,6 +49,7 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         max_length= 20,
         db_column= "usuario_telefono",
         verbose_name= "Telefono del usuario",
+        null=True
     )
     usuarioFoto = models.ImageField(
         upload_to = "usuario/",
@@ -119,13 +121,13 @@ class VeterinarioModel(models.Model):
         max_length= 45,
         db_column= "veterinario_nombre",
         null=False,
-        verbose_name= "Nombre de la veterinaria"
+        verbose_name= "Nombre de la veterinario"
     )
     veterinarioApellido = models.CharField(
         max_length= 45,
         db_column= "veterinario_apellido",
         null=False,
-        verbose_name= "Apellido de la veterinaria"
+        verbose_name= "Apellido de la veterinario"
     )
     veterinarioDescripcion = models.TextField(
         db_column= "veterinario_descripcion",
@@ -135,13 +137,14 @@ class VeterinarioModel(models.Model):
         upload_to = "veterinario/",
         db_column= "veterinaria_foto",
         verbose_name= "Foto del veterinario",
-        null= False
-    )
+        null= True 
+        )
     veterinaria = models.ForeignKey(
         to = VeterianriaModel,
         related_name= "veterinariosVeterinaria",
         db_column= "veterinaria_id",
         on_delete= models.PROTECT,
+        null=True
     )
 
     class Meta:
@@ -160,6 +163,16 @@ class ServicioModel(models.Model):
         null= False,
         verbose_name= "Nombre del servicio",
         max_length= 45
+    )
+    servicioDescripcion = models.TextField(
+        db_column= "servicio_descripcion",
+        verbose_name= "Descripcion del servicio"
+    )
+    servicioFoto = models.ImageField(
+        upload_to = "servicio/",
+        db_column = "servicio_foto",
+        null= True,
+        verbose_name= "Foto del Servicio"
     )
     veterinaria = models.ForeignKey(
         db_column= "veterinaria_id",
@@ -191,7 +204,8 @@ class SedeModel(models.Model):
         db_column= "veterinaria_id",
         to= VeterianriaModel,
         related_name= "veterinariaSede",
-        on_delete= models.CASCADE
+        on_delete= models.CASCADE,
+        null=True
     )
     class Meta:
         db_table = "t_sede"
@@ -224,20 +238,23 @@ class CitaModel(models.Model):
     cliente = models.ForeignKey(
         to= UsuarioModel,
         related_name="cliente",
-        db_column="usuario_id",
-        on_delete= models.CASCADE
+        db_column="usuario",
+        on_delete= models.CASCADE,
+        null=True
     )
     sede = models.ForeignKey(
         to= SedeModel,
         db_column= "sede_id",
         on_delete= models.CASCADE,
-        related_name= "sede"
+        related_name= "sede",
+        null=True
     )
     servicio = models.ForeignKey(
         to= ServicioModel,
         related_name= "servicio",
         on_delete= models.CASCADE,
-        db_column= "servicio_id"
+        db_column= "servicio_id",
+        null=True
     )
     class Meta: 
         db_table = "t_cita"
@@ -261,6 +278,14 @@ class MascotaModel(models.Model):
         null=False,
         verbose_name= "Edad de la Mascota",
         db_column= "mascota_edad"
+    )
+    cliente = models.ForeignKey(
+        to=UsuarioModel,
+        db_column= "usuario",
+        verbose_name="Usuario de la Mascota",
+        on_delete= models.PROTECT,
+        related_name= "mascotaUsuario",
+        null=True
     )
 
     class Meta:
