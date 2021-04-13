@@ -1,10 +1,14 @@
 
 from re import S
 from django.db.models import fields
+from rest_framework_simplejwt import tokens
 from .models import * 
 from rest_framework import serializers
 
-
+# Agregado por Jesus
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as SimpleTokenObtainPairSerializer
+from django.utils.translation import gettext_lazy as _
 class VeterinariaSerializer(serializers.ModelSerializer):
 
     def update(self):
@@ -21,9 +25,11 @@ class VeterinariaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class VeterinarioSerializer(serializers.ModelSerializer):
 
-    # veterinaria = VeterinariaSerializer(source= 'veterinaria', many=True)
+class VeterinarioSerializer(serializers.ModelSerializer):
+    # veterinaria = VeterinariaSerializer()
+
+    # veterinaria = VeterinariaSerializer(source= 'veterinaria_id', many=True)
     def update(self):
         self.instance.veterinarioNombre = self.validated_data.get('veterinarioNombre')
         self.instance.veterinarioApellido = self.validated_data.get('veterinarioApellido')
@@ -38,12 +44,33 @@ class VeterinarioSerializer(serializers.ModelSerializer):
 
     #     if(self.instance):
     #         self.instance
+
+# ------ Agregado por Diego ------------
+    def delete(self):
+        self.instance.veterinarioEstado = False
+        self.instance.save()
+        return self.instance
+# ---------------------------------
+
     class Meta:
         model = VeterinarioModel
         # fields = ['veterinarioNombre', 'veterinarioApellido', 'veterinarioDescripcion', 'veterinarioFoto']
         fields = '__all__'
 
 class ServiciosSerializer(serializers.ModelSerializer):
+    # veterinaria = VeterinariaSerializer()
+    def update(self):
+        self.instance.servicioNombre = self.validated_data.get('servicioNombre')
+        self.instance.servicioDescripcion = self.validated_data.get('servicioDescripcion')
+        self.instance.servicioFoto = self.validated_data.get('servicioFoto')
+        self.instance.veterinaria  = self.validated_data.get('veterinaria')
+        self.instance.save()
+
+    def deleted(self):
+        self.instance.servicioEstado = False
+        self.instance.save()
+        return self.instance
+
     class Meta:
         model = ServicioModel
         fields = "__all__"
@@ -83,8 +110,39 @@ class RegistroUsuariosSerializer(serializers.ModelSerializer):
         model = UsuarioModel
         exclude = ['groups', 'user_permissions']
 
-class MascotarSerializer(serializers.ModelSerializer):
+class MascotasSerializer(serializers.ModelSerializer):
+
+    def update(self):
+        self.instance.mascotaNombre = self.validated_data.get("mascotaNombre")
+        self.instance.mascotaEdad = self.validated_data.get("mascotaEdad")
+        self.instance.cliente = self.validated_data.get("cliente")
+        self.instance.save()
+        return self
+
+    def delete(self):
+        self.instance.mascotaEstado = False
+        self.instance.save()
+        return self.instance
 
     class Meta:
         model= MascotaModel
         fields = "__all__"
+
+
+
+#Agregado por Jesus
+class CustomPayloadSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token =  super(CustomPayloadSerializer, cls).get_token(user)
+        # token['usuarioTipo'] = user.usuarioTipo
+        print(user)
+        print(token)
+        return token
+
+class TokenObtainPairSerializer(SimpleTokenObtainPairSerializer):
+    default_error_messages = {
+        'no_active_account': _('CUSTOM ERROR MESSAGE HERE')
+    }
+
+#Agregado por Jesus 
