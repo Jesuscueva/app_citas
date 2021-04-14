@@ -1,5 +1,5 @@
 
-from re import S
+from re import S, search
 from django.db.models import fields
 from rest_framework_simplejwt import tokens
 from .models import * 
@@ -27,9 +27,6 @@ class VeterinariaSerializer(serializers.ModelSerializer):
 
 
 class VeterinarioSerializer(serializers.ModelSerializer):
-    # veterinaria = VeterinariaSerializer()
-
-    # veterinaria = VeterinariaSerializer(source= 'veterinaria_id', many=True)
     def update(self):
         self.instance.veterinarioNombre = self.validated_data.get('veterinarioNombre')
         self.instance.veterinarioApellido = self.validated_data.get('veterinarioApellido')
@@ -38,19 +35,11 @@ class VeterinarioSerializer(serializers.ModelSerializer):
         
         self.instance.save()
         return self.data
-
-    # def delete(self):
-    #     print(self.instance)
-
-    #     if(self.instance):
-    #         self.instance
     class Meta:
         model = VeterinarioModel
-        # fields = ['veterinarioNombre', 'veterinarioApellido', 'veterinarioDescripcion', 'veterinarioFoto']
         fields = '__all__'
 
 class ServiciosSerializer(serializers.ModelSerializer):
-    # veterinaria = VeterinariaSerializer()
     class Meta:
         model = ServicioModel
         fields = "__all__"
@@ -90,25 +79,34 @@ class RegistroUsuariosSerializer(serializers.ModelSerializer):
         model = UsuarioModel
         exclude = ['groups', 'user_permissions']
 
-class MascotarSerializer(serializers.ModelSerializer):
 
+#Agregado por Jesus
+class UsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuarioModel
+        fields = ["usuarioNombre", "usuarioApellido", "usuarioCelular", "usuarioFoto"]
+
+class MascotarSerializer(serializers.ModelSerializer):
     class Meta:
         model= MascotaModel
         fields = "__all__"
 
-#Agregado por Jesus
+class MascotaUsuarioSerializer(serializers.ModelSerializer):
+    mascota = MascotarSerializer(source="mascotaUsuario", many=True, read_only=True)
+    class Meta:
+        model = UsuarioModel
+        exclude = ["last_login","is_superuser","usuarioTipo","password",   "is_active", "is_staff", "groups", "user_permissions"]
+
 class CustomPayloadSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token =  super(CustomPayloadSerializer, cls).get_token(user)
-        # token['usuarioTipo'] = user.usuarioTipo
+        token['usuarioTipo'] = user.usuarioTipo
+        token['usuarioNombre'] = user.usuarioNombre
+        token['usuarioApellido'] = user.usuarioApellido
         print(user)
         print(token)
         return token
 
-class TokenObtainPairSerializer(SimpleTokenObtainPairSerializer):
-    default_error_messages = {
-        'no_active_account': _('CUSTOM ERROR MESSAGE HERE')
-    }
 
 #Agregado por Jesus 

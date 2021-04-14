@@ -1,7 +1,7 @@
 
 # Create your views here.
 
-
+from django.http.request import RawPostDataException
 from .serializers import * 
 from .models import * 
 from uuid import uuid4
@@ -13,12 +13,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenObtainPairView as SimpleTokenObtainPairView
+from .permisions import administradorPost, administradorPut
 ## Agregado por Jesus
 
 
 class VeterinariaController(generics.ListCreateAPIView):
     queryset = VeterianriaModel.objects.all()
     serializer_class = VeterinariaSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         respuesta = self.serializer_class(
@@ -54,7 +56,9 @@ class VeterinariaController(generics.ListCreateAPIView):
 class ActualizarVeterinariaController(generics.RetrieveUpdateDestroyAPIView):
     queryset = VeterianriaModel.objects.all()
     serializer_class = VeterinariaSerializer
-
+    # Agregado por Jesus
+    permission_classes = [IsAuthenticated, administradorPut]
+    # Agregado por Jesus
     def get_queryset(self, id):
         return VeterianriaModel.objects.filter(veterinariaId=id).first()
 
@@ -84,7 +88,9 @@ class ActualizarVeterinariaController(generics.RetrieveUpdateDestroyAPIView):
 class VeterinariosController(generics.ListCreateAPIView): 
     queryset = VeterinarioModel.objects.all()
     serializer_class = VeterinarioSerializer
-    
+    # Agregado por Jesus
+    permission_classes = [IsAuthenticated, administradorPost]
+    # Agregado por Jesus
     def get(self, request):
         respuesta = self.serializer_class(instance= self.get_queryset(), many=True)
 
@@ -113,12 +119,13 @@ class VeterinariosController(generics.ListCreateAPIView):
                 "content": respuesta.errors,
                 "message": "Error al crear"
             }, status.HTTP_400_BAD_REQUEST)
-    #No se puede agregar un veterinario porque me pide veterinaria_id la foreinkey
 
 class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
     queryset = VeterinarioModel.objects.all()
     serializer_class = VeterinarioSerializer
-
+    # Agregado por Jesus
+    permission_classes = [IsAuthenticated, administradorPut]
+    # Agregado por Jesus
     def get_queryset(self, id):
         return VeterinarioModel.objects.filter(veterinarioId=id).first()
 
@@ -165,7 +172,9 @@ class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
 class serviciosController(generics.ListCreateAPIView):
     queryset = ServicioModel.objects.all()
     serializer_class = ServiciosSerializer
-
+    # Agregado por Jesus
+    permission_classes = [IsAuthenticated, administradorPost]
+    # Agregado por Jesus
     def get(self, request):
         respuesta = self.serializer_class(instance=self.get_queryset(), many= True)
 
@@ -220,18 +229,51 @@ class CustomPayloadController(TokenObtainPairView):
     permission_classes = [AllowAny]
     serializer_class = CustomPayloadSerializer
 
-class TokenObtainPairView(SimpleTokenObtainPairView):
-    serializer_class = TokenObtainPairSerializer
-
-# Agregado por Jesus
-class MascotaDelUsuario(generics.ListCreateAPIView):
+class MascotaController(generics.ListCreateAPIView):
     queryset = MascotaModel.objects.all()
-    serializer_class = ""
+    serializer_class = MascotarSerializer
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        respuesta = self.serializer_class(instace = self.get_queryset(), many=True)
+        respuesta = self.serializer_class(instance = self.get_queryset(), many=True)
         return Response({
             "success": True,
             "content": respuesta.data,
             "message": None
         })
+    def post(self, request):
+        respuesta = self.serializer_class(data=request.data)
+        if respuesta.is_valid():
+            respuesta.save()
+            return Response({
+                "success": True,
+                "content": respuesta.data,
+                "message": "Mascota registrada con exito"
+            }, status.HTTP_201_CREATED)
+        else: 
+            return Response({
+                "success": False,
+                "content": respuesta.errors,
+                "message": "Error al crear mascota"
+            },status.HTTP_400_BAD_REQUEST)
+
+
+class MascotaDelUsuarioPorId(generics.ListAPIView):
+    queryset = UsuarioModel.objects.all()
+    serializer_class = MascotaUsuarioSerializer    
+    
+    def get_queryset(self, id):
+        return UsuarioModel.objects.filter(usuarioId=id).first()
+
+    def get(self, request, id):
+        respuesta = self.serializer_class(instance= self.get_queryset(id))
+        return Response({
+            "success": True,
+            "content": respuesta.data,
+            "message": None
+        })
+
+
+# Agregado por Jesus
+
+

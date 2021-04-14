@@ -13,5 +13,6 @@ urlpatterns = [
     path('registro', RegistroUsuariosController.as_view()),
     path('login_custom', CustomPayloadController.as_view()),
     path('login', TokenObtainPairView.as_view()),
-    path("refresh", TokenRefreshView.as_view())
+    path("mascota", MascotaController.as_view()),
+    path("traerMascotadelUsuario/<int:id>", MascotaDelUsuarioPorId.as_view())
 ]

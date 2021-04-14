@@ -55,6 +55,7 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         upload_to = "usuario/",
         db_column = "usuario_foto",
         verbose_name= "Foto del usuario",
+        default="default.png",
     )
     
 
