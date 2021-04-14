@@ -11,6 +11,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as Si
 from django.utils.translation import gettext_lazy as _
 class VeterinariaSerializer(serializers.ModelSerializer):
 
+    
+
     def update(self):
         self.instance.veterinariaNombre = self.validated_data.get('veterinariaNombre')
         self.instance.veterinariaLogo = self.validated_data.get('veterinariaLogo')
@@ -76,7 +78,7 @@ class ServiciosSerializer(serializers.ModelSerializer):
         fields = "__all__"
     
 
-class RegistroUsuariosSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True)
     # print(password)

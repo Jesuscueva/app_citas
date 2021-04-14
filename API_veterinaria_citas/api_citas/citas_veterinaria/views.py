@@ -174,8 +174,8 @@ class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
                 "message": "Error al actualizar el veterinario"
             })
     
-# --------- Agregado por Diego -------------
-# Eliminar (DELETE) para los veterinarios    
+    # --------- Agregado por Diego -------------
+    # Eliminar (DELETE) para los veterinarios    
     def delete(self, request, id):
         consulta = self.get_queryset(id)
         if consulta: 
@@ -287,8 +287,17 @@ class actualizarServiciosController(generics.RetrieveUpdateDestroyAPIView):
 # -----------------------------------------------
 
 # Registrar Usuarios
-class RegistroUsuariosController(generics.CreateAPIView):
-    serializer_class = RegistroUsuariosSerializer
+class UsuariosController(generics.ListCreateAPIView):
+    queryset = UsuarioModel.objects.all()
+    serializer_class = UsuarioSerializer
+
+    def get(self, request):
+        respuesta = self.serializer_class(instance=self.queryset.all(), many=True)
+        return Response(data={
+            'success': True,
+            'content': respuesta.data,
+            'message': None,
+        })
 
     def post(self, request):
         print(request.FILES)
@@ -310,6 +319,8 @@ class RegistroUsuariosController(generics.CreateAPIView):
                 "content": nuevoUsuario.errors,
                 "message": "Error al crear nuevo usuario"
             }, status.HTTP_400_BAD_REQUEST)
+
+class
 
 #Agregado por Jesus
 class CustomPayloadController(TokenObtainPairView):
