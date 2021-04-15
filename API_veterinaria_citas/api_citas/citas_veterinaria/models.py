@@ -1,5 +1,6 @@
 
 from re import T
+from django import db
 from django.db import models
 
 # Create your models here.
@@ -48,11 +49,13 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         max_length= 20,
         db_column= "usuario_telefono",
         verbose_name= "Telefono del usuario",
+        null=True
     )
     usuarioFoto = models.ImageField(
         upload_to = "usuario/",
         db_column = "usuario_foto",
         verbose_name= "Foto del usuario",
+        default="default.png",
     )
     
 
@@ -103,6 +106,7 @@ class VeterianriaModel(models.Model):
         db_column= "veterinaria_direccion",
         verbose_name= "Direccion de la veterinaria"
     )
+    
 
     class Meta: 
         db_table = "t_veterinaria"
@@ -119,13 +123,13 @@ class VeterinarioModel(models.Model):
         max_length= 45,
         db_column= "veterinario_nombre",
         null=False,
-        verbose_name= "Nombre de la veterinaria"
+        verbose_name= "Nombre de la veterinario"
     )
     veterinarioApellido = models.CharField(
         max_length= 45,
         db_column= "veterinario_apellido",
         null=False,
-        verbose_name= "Apellido de la veterinaria"
+        verbose_name= "Apellido de la veterinario"
     )
     veterinarioDescripcion = models.TextField(
         db_column= "veterinario_descripcion",
@@ -135,8 +139,14 @@ class VeterinarioModel(models.Model):
         upload_to = "veterinario/",
         db_column= "veterinaria_foto",
         verbose_name= "Foto del veterinario",
-        null= False
+        null= True 
+        )
+    veterinarioEstado = models.BooleanField(
+        default=True,
+        db_column="especie_estado",
+        null=False
     )
+
     veterinaria = models.ForeignKey(
         to = VeterianriaModel,
         related_name= "veterinariosVeterinaria",
@@ -161,6 +171,21 @@ class ServicioModel(models.Model):
         null= False,
         verbose_name= "Nombre del servicio",
         max_length= 45
+    )
+    servicioDescripcion = models.TextField(
+        db_column= "servicio_descripcion",
+        verbose_name= "Descripcion del servicio"
+    )
+    servicioFoto = models.ImageField(
+        upload_to = "servicio/",
+        db_column = "servicio_foto",
+        null= True,
+        verbose_name= "Foto del Servicio"
+    )
+    servicioEstado = models.BooleanField(
+        default=True,
+        db_column="servicio_estado",
+        null=False
     )
     veterinaria = models.ForeignKey(
         db_column= "veterinaria_id",
@@ -200,6 +225,11 @@ class SedeModel(models.Model):
         verbose_name = "sede"
 
 class CitaModel(models.Model):
+    ESTADO = [
+        (1, "PENDIENTE"),
+        (2, "ECHO"),
+        (2, "CANCELADO")
+    ]
     citaId = models.AutoField(
         db_column= "cita_id",
         primary_key=True,
@@ -217,6 +247,11 @@ class CitaModel(models.Model):
         decimal_places= 3,
         null=False
     )
+    citaEstado= models.IntegerField(
+        db_column= "cita_estado",
+        verbose_name= "Estado de la cita",
+        choices= ESTADO
+    )
     veterinaria = models.ForeignKey(
         to= VeterianriaModel,
         db_column= "veterinaria_id",
@@ -226,8 +261,9 @@ class CitaModel(models.Model):
     cliente = models.ForeignKey(
         to= UsuarioModel,
         related_name="cliente",
-        db_column="usuario_id",
-        on_delete= models.CASCADE
+        db_column="usuario",
+        on_delete= models.CASCADE,
+        null=True
     )
     sede = models.ForeignKey(
         to= SedeModel,
@@ -273,11 +309,17 @@ class MascotaModel(models.Model):
         null= True,
         on_delete= models.PROTECT
     )
-    usuario = models.ForeignKey(
-        to= UsuarioModel,
-        related_name= "mascotaUsuario",
-        db_column= "usuario_id",
+    mascotaEstado = models.BooleanField(
+        default=True,
+        db_column="mascota_estado",
+        null=False
+    )
+    cliente = models.ForeignKey(
+        to=UsuarioModel,
+        db_column= "usuario",
+        verbose_name="Usuario de la Mascota",
         on_delete= models.PROTECT,
+        related_name= "mascotaUsuario",
         null=True
     )
 
