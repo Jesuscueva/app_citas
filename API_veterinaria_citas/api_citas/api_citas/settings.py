@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'corsheaders',
-    'citas_veterinaria'
+    'citas_veterinaria',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'api_citas.urls'
@@ -138,3 +140,23 @@ CORS_ORIGIN_ALLOW_ALL = True
 MEDIA_URL = '/media/'
 # sirve para mostrar el archivo multimedia mediante una URL
 MEDIA_ROOT = BASE_DIR / 'media'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SIMPLE_JWT = {
+    # sirve para indicar la pk de nuestra tabla user si es que la hemos cambiado (x defecto es 'id')
+    'USER_ID_FIELD': 'usuarioId',
+    # sirve para indicar cuanto de vida va a tener la token de ACCESSO
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    # sirve para indicar que algoritmo va a usar para encriptar la token
+    'ALGORITHM': 'HS256',  # 'HS384', 'HS512',
+    # sirve para indicar mediante que palabra va a utilizar para identificar la token
+    'AUTH_HEADER_TYPES': ('Bearer', ),
+    # si el usuario acepta renovar la sesion la token de acceso que se creará sera con un tiempo de vida de un dia
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
+
+}
