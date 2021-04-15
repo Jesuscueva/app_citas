@@ -1,5 +1,5 @@
 
-from re import S
+from re import S, search
 from django.db.models import fields
 from rest_framework_simplejwt import tokens
 from .models import * 
@@ -56,7 +56,6 @@ class VeterinarioSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VeterinarioModel
-        # fields = ['veterinarioNombre', 'veterinarioApellido', 'veterinarioDescripcion', 'veterinarioFoto']
         fields = '__all__'
 
 class ServiciosSerializer(serializers.ModelSerializer):
@@ -125,26 +124,38 @@ class MascotasSerializer(serializers.ModelSerializer):
         self.instance.mascotaEstado = False
         self.instance.save()
         return self.instance
-
+    
     class Meta:
         model= MascotaModel
         fields = "__all__"
 
-
-
 #Agregado por Jesus
+class RegistroUsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuarioModel
+        fields = ["usuarioNombre", "usuarioApellido", "usuarioCelular", "usuarioFoto"]
+
+class MascotarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= MascotaModel
+        fields = "__all__"
+
+class MascotaUsuarioSerializer(serializers.ModelSerializer):
+    mascota = MascotarSerializer(source="mascotaUsuario", many=True, read_only=True)
+    class Meta:
+        model = UsuarioModel
+        exclude = ["last_login","is_superuser","usuarioTipo","password",   "is_active", "is_staff", "groups", "user_permissions"]
+
 class CustomPayloadSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token =  super(CustomPayloadSerializer, cls).get_token(user)
-        # token['usuarioTipo'] = user.usuarioTipo
+        token['usuarioTipo'] = user.usuarioTipo
+        token['usuarioNombre'] = user.usuarioNombre
+        token['usuarioApellido'] = user.usuarioApellido
         print(user)
         print(token)
         return token
 
-class TokenObtainPairSerializer(SimpleTokenObtainPairSerializer):
-    default_error_messages = {
-        'no_active_account': _('CUSTOM ERROR MESSAGE HERE')
-    }
 
 #Agregado por Jesus 
