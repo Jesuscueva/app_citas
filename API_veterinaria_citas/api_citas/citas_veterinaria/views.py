@@ -13,6 +13,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenObtainPairView as SimpleTokenObtainPairView
 from .permisions import administradorPost, administradorPut
+import os
+from django.conf import settings
 ## Agregado por Jesus
 
 
@@ -184,8 +186,12 @@ class veterinarioController(generics.RetrieveUpdateDestroyAPIView):
     # Eliminar (DELETE) para los veterinarios    
     def delete(self, request, id):
         consulta = self.get_queryset(id)
+        imagen = str(consulta.veterinarioFoto)
         if consulta: 
             print(consulta)
+            print(imagen)
+            rutaImagen = settings.MEDIA_ROOT / imagen
+            os.remove(rutaImagen)
             respuesta = self.serializer_class(instance=consulta)
             respuesta.delete()   
             return Response(data={
@@ -277,8 +283,11 @@ class ServicioController(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, id):
         consulta = self.get_queryset(id)
+        imagen = str(consulta.servicioFoto)
         if consulta: 
             respuesta = self.serializer_class(instance=consulta)
+            rutaIMG= settings.MEDIA_ROOT / imagen
+            os.remove(rutaIMG)
             respuesta.deleted()
             return Response(data={
                 "success": True,
@@ -328,7 +337,7 @@ class CustomPayloadController(TokenObtainPairView):
 class MascotasController(generics.ListCreateAPIView):
     queryset = MascotaModel.objects.all()
     serializer_class = MascotarSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         respuesta = self.serializer_class(instance = self.get_queryset(), many=True)

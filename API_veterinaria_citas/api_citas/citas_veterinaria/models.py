@@ -302,12 +302,11 @@ class MascotaModel(models.Model):
         verbose_name= "Edad de la Mascota",
         db_column= "mascota_edad"
     )
-    cita = models.ForeignKey(
-        to= CitaModel,
-        related_name= "citaMascota",
-        db_column= "cita_id",
+    mascotaFoto = models.ImageField(
+        upload_to = "mascota/",
+        db_column = "mascota_foto",
         null= True,
-        on_delete= models.PROTECT
+        verbose_name= "Foto de la mascota"
     )
     mascotaEstado = models.BooleanField(
         default=True,
