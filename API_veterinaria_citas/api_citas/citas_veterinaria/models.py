@@ -57,8 +57,6 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
         verbose_name= "Foto del usuario",
         default="default.png",
     )
-    
-
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     objects = UsuariosManager()

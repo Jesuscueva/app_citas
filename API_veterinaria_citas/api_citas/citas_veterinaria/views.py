@@ -108,9 +108,19 @@ class VeterinariosController(generics.ListCreateAPIView):
     # Agregado por Jesus
     permission_classes = [IsAuthenticated, administradorPost]
     # Agregado por Jesus
-    def get(self, request):
-        respuesta = self.serializer_class(instance= self.get_queryset(), many=True)
 
+    # Agregado por Diego -----------------
+    def filtrar_veterinarios(self):
+        veterinarios = VeterinarioModel.objects.all()
+        resultado = []
+        for veterinario in veterinarios:
+            if (veterinario.veterinarioEstado):
+                resultado.append(veterinario)
+        return resultado
+
+    def get(self, request):
+        respuesta = self.serializer_class(instance=self.filtrar_veterinarios(), many=True)
+    # -------------------
         return Response({
             "success": True,
             "content": respuesta.data,
@@ -213,9 +223,19 @@ class serviciosController(generics.ListCreateAPIView):
     # Agregado por Jesus
     permission_classes = [IsAuthenticated, administradorPost]
     # Agregado por Jesus
-    def get(self, request):
-        respuesta = self.serializer_class(instance=self.get_queryset(), many= True)
 
+    # Agregado por Diego --------------
+    def filtrar_servicios(self):
+        servicios = ServicioModel.objects.all()
+        resultado = []
+        for servicio in servicios:
+            if (servicio.servicioEstado):
+                resultado.append(servicio)
+        return resultado
+    
+    def get(self, request):
+        respuesta = self.serializer_class(instance=self.filtrar_servicios(), many= True)
+    # ------------------
         return Response({
             "success": True,
             "content": respuesta.data,
@@ -440,15 +460,100 @@ class MascotaController(generics.RetrieveUpdateDestroyAPIView):
             
             })
 
+class CitasController(generics.ListCreateAPIView):
+    queryset = CitaModel.objects.all()
+    serializer_class = CitaSerializer
+    permission_classes = [IsAuthenticated]
 
+    def filtrar_citas(self):
+        citas = CitaModel.objects.all()
+        resultado = []
+        for cita in citas:
+            if (cita.citaEstado):
+                resultado.append(cita)
+        return resultado
 
+    def get(self, request):
+        respuesta = self.serializer_class(instance=self.filtrar_citas(), many=True)
+        return Response(data={
+            "success": True,
+            "content": respuesta.data,
+            "message": None
+        })
 
+    def post(self, request):
+        respuesta = self.serializer_class(data=request.data)
+        if respuesta.is_valid():
+            respuesta.save()
+            return Response(data={
+                "success": True,
+                "content": respuesta.data,
+                "message": "Cita creada con éxito"
+            }, status=201)
+        else:
+            return Response(data={
+                "success": False,
+                "content": respuesta.errors,
+                "message": "Servicio no se creo correctamente"
+            })
 
+class CitaController(generics.RetrieveUpdateDestroyAPIView):
+    queryset= CitaModel.objects.all()
+    serializer_class = CitaSerializer
 
+    def get_queryset(self, id):
+        return CitaModel.objects.filter(citaId=id).first()
 
+    def get(self, request, id):
+        cita = self.get_queryset(id)
+        respuesta = self.serializer_class(instance=cita)
+        if cita:
+            return Response(data={
+                "success": True,
+                "content": respuesta.data,
+                "message": None
+            })
+        else:
+            return Response(data={
+                "success": True,
+                "content": None,
+                "message": "No se encontró el servicio con ID {}".format(id)
+            })
 
+    def put(self, request, id):
+        cita = self.get_queryset(id)
+        respuesta = self.serializer_class(instance=cita, data=request.data)
 
+        if respuesta.is_valid():
+            resultado = respuesta.update()
+            return Response(data={
+                "success": True,
+                "content": resultado,
+                "message": "Se ha actualizado la cita exitosamente"
+            })
+        else:
+            return Response(data={
+                "success": False,
+                "content": respuesta.errors,
+                "message": "Data incorrecta"
+            })
 
-
+    def delete(self, request, id):
+        consulta = self.get_queryset(id)
+        if consulta: 
+            respuesta = self.serializer_class(instance=consulta) 
+            respuesta.delete()
+            return Response(data={
+                "success": True,
+                "content": None,
+                "message": "Se inhabilitó la cita exitosamente"
+            })
+        else:  
+            return Response(data={
+                "success": False,
+                "content": None,
+                "message": "La cita no existe"
+            
+            })
 
 

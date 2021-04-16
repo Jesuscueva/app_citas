@@ -9,6 +9,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as SimpleTokenObtainPairSerializer
 from django.utils.translation import gettext_lazy as _
+
 class VeterinariaSerializer(serializers.ModelSerializer):
 
     
@@ -25,8 +26,6 @@ class VeterinariaSerializer(serializers.ModelSerializer):
     class Meta: 
         model = VeterianriaModel
         fields = "__all__"
-
-
 
 class VeterinarioSerializer(serializers.ModelSerializer):
     # veterinaria = VeterinariaSerializer()
@@ -47,12 +46,12 @@ class VeterinarioSerializer(serializers.ModelSerializer):
     #     if(self.instance):
     #         self.instance
 
-# ------ Agregado por Diego ------------
+    # ------ Agregado por Diego ------------
     def delete(self):
         self.instance.veterinarioEstado = False
         self.instance.save()
         return self.instance
-# ---------------------------------
+    # ---------------------------------
 
     class Meta:
         model = VeterinarioModel
@@ -76,7 +75,6 @@ class ServiciosSerializer(serializers.ModelSerializer):
         model = ServicioModel
         fields = "__all__"
     
-
 class UsuarioSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True)
@@ -157,5 +155,20 @@ class CustomPayloadSerializer(TokenObtainPairSerializer):
         print(token)
         return token
 
+class CitaSerializer(serializers.ModelSerializer):
+    def update(self):
+        self.instance.citaFecha = self.validated_data.get("citaFecha")
+        self.instance.citaCosto = self.validated_data.get("citaCosto")
+        self.instance.citaEstado = self.validated_data.get("citaEstado")
+        self.instance.servicio = self.validated_data.get("servicio")
+
+    def delete(self):
+        self.instance.citaEstado = False
+        self.instance.save()
+        return self.instance
+
+    class Meta:
+        model = MascotaModel
+        fields = "__all__"
 
 #Agregado por Jesus 
