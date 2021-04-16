@@ -106,6 +106,14 @@ class VeterianriaModel(models.Model):
         db_column= "veterinaria_direccion",
         verbose_name= "Direccion de la veterinaria"
     )
+    veterinariaHorario = models.TextField(
+        db_column= "veterinaria_horario",
+        verbose_name="Horario de la veterinaria"
+    )
+    veterinariaCorreo = models.TextField(
+        db_column= "veterinaria_correo",
+        verbose_name= "veterinaria correo"
+    ) 
     
 
     class Meta: 

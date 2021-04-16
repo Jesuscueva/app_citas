@@ -35,9 +35,9 @@ class VeterinarioSerializer(serializers.ModelSerializer):
     def update(self):
         self.instance.veterinarioNombre = self.validated_data.get('veterinarioNombre')
         self.instance.veterinarioApellido = self.validated_data.get('veterinarioApellido')
-        self.instance.veterinarioFoto = self.validated_data.get('veterinarioApellido')
+        self.instance.veterinarioFoto = self.validated_data.get('veterinarioFoto')
         self.instance.veterinarioDescripcion =self.validated_data.get('veterinarioDescripcion')
-        
+        self.instamce.veterinaria= self.validated_data.get("veterinaria")
         self.instance.save()
         return self.data
 

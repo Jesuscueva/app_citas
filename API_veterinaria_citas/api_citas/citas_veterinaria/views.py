@@ -110,7 +110,7 @@ class VeterinariosController(generics.ListCreateAPIView):
     # Agregado por Jesus
     def get(self, request):
         respuesta = self.serializer_class(instance= self.get_queryset(), many=True)
-
+        print(respuesta)
         return Response({
             "success": True,
             "content": respuesta.data,
