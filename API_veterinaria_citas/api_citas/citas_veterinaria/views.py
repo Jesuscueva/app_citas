@@ -82,8 +82,8 @@ class ActualizarVeterinariaController(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, id):
         veterinaria = self.get_queryset(id)
         print(id)
-        print(veterinaria)
-        print(request)
+        # print(veterinaria)
+        # print(request)
         formato = request.FILES['veterinariaLogo'].name.split('.')[1]
         nombre=str(uuid4())+'.'+formato
         request.FILES['veterinariaLogo'].name = nombre
@@ -110,7 +110,6 @@ class VeterinariosController(generics.ListCreateAPIView):
     # Agregado por Jesus
     def get(self, request):
         respuesta = self.serializer_class(instance= self.get_queryset(), many=True)
-        print(respuesta)
         return Response({
             "success": True,
             "content": respuesta.data,
@@ -311,7 +310,7 @@ class RegistroUsuariosController(generics.CreateAPIView):
     def post(self, request):
         print(request.FILES)
         formato = request.FILES['usuarioFoto'].name.split('.')[1]
-        print(formato)
+        # print(formato)
         nombre=str(uuid4())+'.'+formato
         request.FILES['usuarioFoto'].name = nombre
         nuevoUsuario = self.serializer_class(data=request.data)

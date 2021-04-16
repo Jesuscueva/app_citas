@@ -19,6 +19,8 @@ class VeterinariaSerializer(serializers.ModelSerializer):
         self.instance.veterinariaDescripcion = self.validated_data.get('veterinariaDescripcion')
         self.instance.veterinariaTelefono = self.validated_data.get('veterinariaTelefono')
         self.instance.veterinariaDireccion = self.validated_data.get('veterinariaDireccion')
+        self.instance.veterinariaCorreo = self.validated_data.get('veterinariaCorreo')
+        self.instance.veterinariaHorario = self.validated_data.get('veterinariaHorario')
         self.instance.save()
         return self.data
 
@@ -37,7 +39,7 @@ class VeterinarioSerializer(serializers.ModelSerializer):
         self.instance.veterinarioApellido = self.validated_data.get('veterinarioApellido')
         self.instance.veterinarioFoto = self.validated_data.get('veterinarioFoto')
         self.instance.veterinarioDescripcion =self.validated_data.get('veterinarioDescripcion')
-        self.instamce.veterinaria= self.validated_data.get("veterinaria")
+        self.instance.veterinaria= self.validated_data.get("veterinaria")
         self.instance.save()
         return self.data
 
