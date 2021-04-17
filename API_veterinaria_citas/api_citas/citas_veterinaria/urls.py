@@ -16,5 +16,8 @@ urlpatterns = [
     path('login', TokenObtainPairView.as_view()),
     path("mascota", MascotasController.as_view()),
     path("mascota/<int:id>", MascotaController.as_view()),
-    path("traerMascotadelUsuario/<int:id>", MascotaDelUsuarioPorId.as_view())
+    path("traerMascotadelUsuario/<int:id>", MascotaDelUsuarioPorId.as_view()),
+    path("citas", CitasController.as_view()),
+    path("citass", TraerCitasDeUsuarioController.as_view())
+
 ]
