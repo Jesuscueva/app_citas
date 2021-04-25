@@ -19,5 +19,4 @@ urlpatterns = [
     path("traerMascotadelUsuario/<int:id>", MascotaDelUsuarioPorId.as_view()),
     path("citas", CitasController.as_view()),
     path("citass", TraerCitasDeUsuarioController.as_view())
-
 ]

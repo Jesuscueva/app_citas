@@ -18,7 +18,28 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
+
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+from rest_framework.permissions import AllowAny
+
+documentation_view = get_schema_view(
+    info = openapi.Info(
+        title="Citas Veterinaria",
+        default_version="1.0",
+        description="Veterinaria API",
+        contact= openapi.Contact(
+            email="jcueva12380@gmail.com", name="Jesus Cueva"
+        ),
+    ),
+    public=True,
+    permission_classes=[AllowAny, ]
+)
+
 urlpatterns = [
+    path("api/docs", documentation_view.with_ui("swagger")),
+    path("api/docs/redoc", documentation_view.with_ui("redoc")),
     path('admin/', admin.site.urls),
     path('', include('citas_veterinaria.urls'))
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

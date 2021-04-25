@@ -158,7 +158,8 @@ class CustomPayloadSerializer(TokenObtainPairSerializer):
         return token
 
 class CitaSerializer(serializers.ModelSerializer):
-    # cliente = MascotaUsuarioSerializer()
+    cliente = MascotaUsuarioSerializer()
+    servicio = ServiciosSerializer()
     
 
     def update(self):
@@ -181,6 +182,7 @@ class CitaSerializer(serializers.ModelSerializer):
 class ValoresDeLaCita(serializers.ModelSerializer):
     servicio = ServiciosSerializer()
     veterinaria = VeterinariaSerializer()
+    # cliente = 
 
     class Meta:
         model = CitaModel

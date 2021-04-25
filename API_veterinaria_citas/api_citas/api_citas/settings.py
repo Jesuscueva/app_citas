@@ -25,7 +25,7 @@ SECRET_KEY = '3*kr5=q3b$c%o(si0y)kkmn6o*kcz9&&npt&byr%^af6%vqvqc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["app-citas-grupo5.herokuapp.com"]
 
 
 # Application definition
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'api_citas.urls'
@@ -82,10 +82,10 @@ WSGI_APPLICATION = 'api_citas.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'qq57rjmwk717lpmr',
-        'USER': 'zp1nf9huetsoabag',
-        'PASSWORD': 'uzumycqu4su689ji',
-        'HOST': 'u6354r3es4optspf.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+        'NAME': 'iqhd82mkruarxu0s',
+        'USER': 'umi5tw9xrlagmc6q',
+        'PASSWORD': 'nqiugzah4q31yllr',
+        'HOST': 'grp6m5lz95d9exiz.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
         'PORT': '3306'
     }
 }
@@ -160,3 +160,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1)
 
 }
+
+
+STATIC_ROOT = BASE_DIR / "assets/"

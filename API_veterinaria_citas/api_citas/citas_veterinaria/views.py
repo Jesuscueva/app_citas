@@ -21,7 +21,7 @@ from django.conf import settings
 class VeterinariaController(generics.ListCreateAPIView):
     queryset = VeterianriaModel.objects.all()
     serializer_class = VeterinariaSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         respuesta = self.serializer_class(
@@ -106,7 +106,7 @@ class VeterinariosController(generics.ListCreateAPIView):
     queryset = VeterinarioModel.objects.all()
     serializer_class = VeterinarioSerializer
     # Agregado por Jesus
-    permission_classes = [IsAuthenticated, administradorPost]
+    permission_classes = [administradorPost]
     # Agregado por Jesus
 
     # Agregado por Diego -----------------
@@ -242,6 +242,10 @@ class serviciosController(generics.ListCreateAPIView):
             "message": None
         })
     def post(self, request):
+        formato = request.FILES['servicioFoto'].name.split('.')[1]
+        print(formato)
+        nombre = str(uuid4())+'.'+formato
+        request.FILES['servicioFoto'].name = nombre
         respuesta = self.serializer_class(data=request.data)
         if respuesta.is_valid():
             respuesta.save()
@@ -462,8 +466,8 @@ class MascotaController(generics.RetrieveUpdateDestroyAPIView):
 
 class CitasController(generics.ListCreateAPIView):
     queryset = CitaModel.objects.all()
-    serializer_class = CitasPorUsuarioSerializaer
-    permission_classes = [IsAuthenticated]
+    serializer_class = CitaSerializer
+    # permission_classes = [IsAuthenticated]
 
     def filtrar_citas(self):
         citas = CitaModel.objects.all()
@@ -506,13 +510,21 @@ class TraerCitasDeUsuarioController(generics.ListAPIView):
     def get(self, request):
         print(request.query_params)
         usuario = request.query_params.get("nombre")
-        respuesta = self.serializer_class(instance= self.get_queryset(usuario))
-        # print(respuesta)
-        return Response({
-            "success": True,
-            "content": respuesta.data,
-            "message": None
-        })
+        print(usuario)
+        if (len(usuario) == 0):
+            return Response({
+                "success": False,
+                "content": "Usuario vacio",
+                "message": "No se coloco nombre de Usuario"
+            })
+        else:
+            respuesta = self.serializer_class(instance= self.get_queryset(usuario))
+            # print(respuesta)
+            return Response({
+                "success": True,
+                "content": respuesta.data,
+                "message": None
+            })
         
 class CitaController(generics.RetrieveUpdateDestroyAPIView):
     queryset= CitaModel.objects.all()
